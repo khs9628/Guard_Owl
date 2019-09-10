@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.board.mapper.BoardMapper">
+<select id="getList" resultType="org.board.domain.BoardVO">
+<![CDATA[
+SELECT * FROM GO_BOARD WHERE BRD_ID > 0
+]]>
+</select>
+
+<insert id="insert">
+INSERT INTO GO_BOARD(BRD_ID, BRD_SUB, BRD_CONTENT, BRD_WRITER)
+VALUES(SEQ_BOARD.NEXTVAL, #{brd_sub}, #{brd_content}, #{brd_writer})
+</insert>
+
+<insert id="insertSelectKey">
+<selectKey keyProperty="brd_id" order="BEFORE" resultType="long">
+SELECT SEQ_BOARD.NEXTVAL FROM DUAL
+</selectKey>
+
+INSERT INTO GO_BOARD(BRD_ID, BRD_SUB, BRD_CONTENT, BRD_WRITER)
+VALUES(#{brd_id}, #{brd_sub}, #{brd_content}, #{brd_writer})
+</insert>
+
+<insert id="insertSelectKey_N">
+<selectKey keyProperty="brd_id" order="BEFORE" resultType="long">
+SELECT SEQ_BOARD.NEXTVAL FROM DUAL
+</selectKey>
+
+INSERT INTO GO_BOARD(BRD_ID, BRD_SUB, BRD_CONTENT, BRD_WRITER, BRD_TYPE)
+VALUES(#{brd_id}, #{brd_sub}, #{brd_content}, #{brd_writer}, 'N')
+</insert>
+
+<select id="read" resultType="org.board.domain.BoardVO">
+SELECT * FROM GO_BOARD WHERE BRD_ID = #{brd_id}
+</select>
+
+<delete id="delete">
+DELETE GO_BOARD WHERE BRD_ID = #{brd_id}
+</delete>
+
+<update id="update">
+UPDATE GO_BOARD
+SET BRD_SUB = #{brd_sub},
+	BRD_CONTENT = #{brd_content},
+	BRD_WRITER = #{brd_writer},
+	BRD_updateDate = sysdate
+	WHERE BRD_ID = #{brd_id}
+</update>
+
+<select id="getListWithPaging" resultType="org.board.domain.BoardVO">
+<![CDATA[
+SELECT BRD_ID, BRD_SUB, BRD_WRITER, BRD_CONTENT, BRD_DATE, BRD_UPDATEDATE, BRD_CNT, CMT_CNT, BRD_TYPE
+from (select /*+INDEX_DESC(go_board pk_board) */ 
+rownum rn, brd_id, brd_sub, brd_writer, brd_content, brd_date, brd_updateDate, brd_cnt, cmt_cnt, brd_type
+from go_board
+where
+]]> 
+<include refid="criteria"/>
+	
+<![CDATA[
+rownum <= #{pageNum} * #{amount})
+where rn > (#{pageNum} -1) * #{amount} AND BRD_TYPE = 'F'
+]]>
+</select>
+
+<select id="getListWithPaging_N" resultType="org.board.domain.BoardVO">
+<![CDATA[
+SELECT BRD_ID, BRD_SUB, BRD_WRITER, BRD_CONTENT, BRD_DATE, BRD_UPDATEDATE, BRD_CNT, CMT_CNT, BRD_TYPE
+from (select /*+INDEX_DESC(go_board pk_board) */ 
+rownum rn, brd_id, brd_sub, brd_writer, brd_content, brd_date, brd_updateDate, brd_cnt , cmt_cnt, brd_type
+from go_board
+where
+]]> 
+<include refid="criteria"/>
+	
+<![CDATA[
+rownum <= #{pageNum} * #{amount})
+where rn > (#{pageNum} -1) * #{amount} AND BRD_TYPE = 'N'
+]]>
+</select>
+
+<!-- 목록과 데이터 개수 처리 -->
+<sql id="criteria">
+<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+<foreach collection="typeArr" item="type">
+<trim prefix="OR">
+<choose>
+<when test="type == 'T'.toString()">
+brd_sub like '%' || #{keyword} || '%'
+</when>
+<when test="type == 'C'.toString()">
+brd_content like '%' || #{keyword} || '%'
+</when>
+<when test="type == 'W'.toString()">
+brd_writer like '%' || #{keyword} || '%'
+</when>
+</choose>
+</trim>
+</foreach>
+</trim>
+</sql>
+
+<select id="getTotalCount" resultType="int">
+SELECT COUNT(*) FROM GO_BOARD
+WHERE <include refid="criteria"/> BRD_ID > 0 AND BRD_TYPE = 'F'
+</select>
+
+<select id="getTotalCount_N" resultType="int">
+SELECT COUNT(*) FROM GO_BOARD
+WHERE <include refid="criteria"/> BRD_ID > 0 AND BRD_TYPE = 'N'
+</select>
+
+<!-- 게시물 조회 수 update -->
+<update id="updateViewCnt">
+UPDATE GO_BOARD SET BRD_CNT = brd_cnt + 1 WHERE BRD_ID = #{brd_id} 
+</update>
+
+<!-- 게시물 댓글의 수 update -->
+<update id="updateReplyCnt">
+UPDATE GO_BOARD SET CMT_CNT = cmt_cnt + #{amount} WHERE BRD_ID = #{brd_id}
+</update>
+</mapper>

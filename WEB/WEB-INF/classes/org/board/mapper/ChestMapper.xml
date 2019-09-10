@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.board.mapper.ChestMapper">
+
+<select id="read" resultType="org.board.domain.ChestVO">
+SELECT * FROM GO_ITEM WHERE ITEM_SAFE_NO = #{item_safe_no}
+</select>
+
+<select id="getList" resultType="org.board.domain.ChestVO">
+SELECT * FROM GO_ITEM WHERE ITEM_SAFE_NO > 0 ORDER BY ITEM_SAFE_NO ASC
+</select>
+
+<!-- 금고 빈 상태로 업데이트 -->
+<update id="emptyUpdate">
+UPDATE GO_ITEM SET ITEM_SAFE_NO = -1 WHERE ITEM_SAFE_NO = #{item_safe_no}
+</update>
+
+<update id="update">
+UPDATE GO_ITEM SET ITEM_NAME = #{item_name}, ITEM_CLASS = #{item_class}, ITEM_REMARK = #{item_remark}, ITEM_STAT = 'F' WHERE ITEM_SAFE_NO = #{item_safe_no} 
+</update>
+
+<update id="delete">
+UPDATE GO_ITEM SET ITEM_NAME = NULL, ITEM_CLASS = NULL, ITEM_REMARK = NULL, ITEM_STAT = 'E' WHERE ITEM_SAFE_NO = #{item_safe_no}
+</update>
+
+<update id="receiptDenyUpdate">
+UPDATE GO_ITEM SET ITEM_STAT = 'F' WHERE ITEM_SAFE_NO = #{item_safe_no}
+</update>
+
+<delete id="chestDelete">
+DELETE GO_ITEM WHERE ITEM_SAFE_NO = -1
+</delete>
+</mapper>

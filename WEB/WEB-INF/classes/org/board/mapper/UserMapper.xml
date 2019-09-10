@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.board.mapper.UserMapper">
+<insert id="insertUser">
+INSERT INTO GO_MEMBER(MEM_NO, MEM_ID, MEM_PWD, MEM_NAME, MEM_PHONE, MEM_EMAIL, MEM_STAT, ENABLED)
+VALUES (SEQ_MEMBER.NEXTVAL, #{mem_id}, #{mem_pwd}, #{mem_name}, #{mem_phone}, #{mem_email}, 'W', 1)
+</insert>
+
+<insert id="insertAuthority">
+INSERT INTO GO_MEMBER_AUTH(MEM_ID, AUTH)
+VALUES (#{mem_id}, #{auth})
+</insert>
+
+<!-- 전체 정보 -->
+<select id="information" parameterType="String" resultType="org.board.domain.UserVO">
+select * from GO_MEMBER where mem_id = #{mem_id}
+</select>
+
+<select id="getMember" resultType="org.board.domain.UserVO">
+SELECT * FROM GO_MEMBER
+</select>
+
+<!-- 회원 아이디 중복 체크 -->
+ <select id="idCheck" resultType="org.board.domain.UserVO">
+ SELECT mem_id
+ FROM GO_MEMBER
+ WHERE mem_id = #{mem_id} 
+ </select> 
+
+<!-- 아이디 찾기 -->
+<select id="findId" parameterType="String" resultType="String">
+		select mem_id from GO_MEMBER where mem_email = #{mem_email}
+</select>
+
+<!-- 이메일로 변경된 비밀번호 전송 -->
+<update id="findPassword" parameterType="org.board.domain.UserVO">
+		update GO_MEMBER set mem_pwd = #{mem_pwd} where mem_id = #{mem_id}
+</update>
+
+<!-- 회원정보 수정 -->
+<update id="modify" parameterType="org.board.domain.UserVO">
+        UPDATE GO_MEMBER SET mem_name = #{mem_name} , mem_email = #{mem_email}, mem_phone = #{mem_phone}
+        WHERE mem_id = #{mem_id}
+</update>
+
+<!-- 비밀번호 변경 -->
+<update id="changePassword" parameterType="org.board.domain.UserVO">
+update GO_MEMBER set mem_pwd = #{mem_pwd} where mem_id = #{mem_id}
+</update>
+
+<resultMap type="org.board.domain.UserVO" id="userMap">
+<id property="mem_id" column="mem_id"/>
+<result property="mem_id" column="mem_id"/>
+<result property="mem_pwd" column="mem_pwd"/>
+<result property="mem_name" column="mem_name"/>
+<result property="mem_email" column="mem_email"/>
+<result property="mem_phone" column="mem_phone"/>
+<collection property="authList" resultMap="authMap">
+</collection>
+</resultMap>
+
+<resultMap type="org.board.domain.AuthVO" id="authMap">
+<result property="mem_id" column="mem_id"/>
+<result property="auth" column="auth"/>
+</resultMap>
+
+<select id="read" resultMap="userMap">
+SELECT member.mem_id, mem_pwd, mem_name, mem_phone, mem_email, mem_stat enabled, auth
+FROM GO_MEMBER member LEFT OUTER JOIN GO_MEMBER_auth auth on member.mem_id = auth.mem_id
+WHERE member.mem_id = #{mem_id} AND mem_stat = 'R'
+</select>
+
+<select id="selectAuth" resultType="org.board.domain.AuthVO">
+SELECT mem_id, auth 
+FROM GO_MEMBER_AUTH
+WHERE mem_id = #{mem_id}
+</select>
+
+<resultMap id="getUserById" type="org.board.domain.UserVO">
+    <result property="mem_id" column="mem_id"/>
+    <collection property="authList" column="mem_id" javaType="java.util.List" ofType="org.board.domain.AuthVO" select="selectAuth"/>
+</resultMap>
+
+<select id="selectUserById" resultMap="getUserById">
+SELECT mem_id, mem_name, mem_email, mem_phone FROM GO_MEMBER WHERE mem_id = #{mem_id}
+</select>
+
+<select id="allUserById" resultMap="getUserById">
+SELECT * FROM GO_MEMBER WHERE mem_id = #{mem_id}
+</select>
+
+<select id="selectUser" resultMap="getUserById">
+SELECT mem_id FROM GO_MEMBER
+</select>
+
+<select id="findAdmin" resultType="org.board.domain.UserVO">
+SELECT * FROM GO_MEMBER where mem_stat = #{mem_stat}
+</select>
+
+<delete id="deleteAuthority">
+DELETE FROM GO_MEMBER_AUTH WHERE mem_id = #{mem_id} AND auth = #{role}
+</delete>
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.board.mapper.RequestMapper">
+
+<!-- 목록 불러오기 -->
+<select id="getList" resultType="org.board.domain.UserVO">
+SELECT * FROM GO_MEMBER WHERE MEM_STAT = 'W' ORDER BY MEM_NO ASC
+</select>
+
+<select id="getList_R" resultType="org.board.domain.ApplicationVO">
+SELECT * FROM GO_APPLICATION WHERE APP_STAT = 'N' AND APP_TYPE = 'R'
+</select>
+
+<select id="getList_K" resultType="org.board.domain.ApplicationVO">
+SELECT * FROM GO_APPLICATION WHERE APP_STAT = 'N' AND APP_TYPE = 'K'
+</select>
+
+<!-- 수령 신청 -->
+<update id="approvalReceipt" parameterType="org.board.domain.ApplicationVO">
+		UPDATE GO_APPLICATION SET APP_STAT = 'Y', APP_TYPE = 'R'  WHERE APP_NO = #{app_no} AND APP_MEM = #{app_mem}
+</update>
+
+<!-- 수령 거절 -->
+<update id="denyApprovalReceipt" parameterType="org.board.domain.ApplicationVO">
+UPDATE GO_APPLICATION SET APP_STAT = 'R' WHERE APP_MEM = #{app_mem} AND APP_NO = #{app_no}
+</update>
+
+
+<!-- 수령 거절 
+<delete id="denyApprovalReceipt" parameterType="org.board.domain.ApplicationVO">
+DELETE GO_APPLICATION WHERE APP_MEM = #{app_mem} AND APP_NO = #{app_no} AND APP_STAT = 'N'
+</delete>
+-->
+
+<!-- 금고 신청 -->
+<update id="approvalKeep" parameterType="org.board.domain.ApplicationVO">
+		UPDATE GO_APPLICATION SET APP_STAT = 'Y', APP_TYPE = 'K'  WHERE APP_ITEM_NO = #{app_item_no} AND APP_MEM = #{app_mem} 
+</update>
+
+<!-- 보관 거절 -->
+<update id="denyApprovalKeep" parameterType="org.board.domain.ApplicationVO">
+UPDATE GO_APPLICATION SET APP_STAT = 'R' WHERE  APP_MEM = #{app_mem} AND  APP_ITEM_NO = #{app_item_no}
+</update>
+ 
+ 
+<!-- 보관 거절  
+<delete id="denyApprovalKeep" parameterType="org.board.domain.ApplicationVO">
+DELETE GO_APPLICATION WHERE APP_MEM = #{app_mem} AND APP_ITEM_NO = #{app_item_no} AND APP_STAT = 'N'
+</delete>
+ -->
+<update id="approvalMember" parameterType="org.board.domain.UserVO">
+		UPDATE GO_MEMBER SET MEM_STAT = 'R' WHERE MEM_ID = #{mem_id}
+</update>
+
+<delete id="denyApprovalMember" parameterType="org.board.domain.UserVO">
+DELETE GO_MEMBER WHERE MEM_ID = #{mem_id}
+</delete>
+
+</mapper>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/navigation_board"
+        android:enabled="true"
+        android:icon="@drawable/ic_view_headline_black_24dp"
+        android:title="@string/title_board" />
+
+    <item
+        android:id="@+id/navigation_request"
+        android:icon="@drawable/ic_assignment_turned_in_black_24dp"
+        android:title="@string/title_request" />
+
+    <item
+        android:id="@+id/navigation_inquire"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:title="@string/title_inquire" />
+
+    <item
+        android:id="@+id/navigation_myPage"
+        android:icon="@drawable/ic_account_box_black_24dp"
+        android:title="@string/title_myPage" />
+
+</menu>

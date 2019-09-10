@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.board.mapper.ReplyMapper">
+
+<select id="information" resultType="org.board.domain.ReplyVO">
+select * from go_comment
+ </select>
+<insert id="insert">
+insert into go_comment(cmt_id, cmt_board, cmt_content, cmt_writer)
+values(seq_comment.nextval, #{cmt_board}, #{cmt_content}, #{cmt_writer})
+</insert>
+
+<select id="read" resultType="org.board.domain.ReplyVO">
+select * from go_comment where cmt_id = #{cmt_id}
+ </select>
+ 
+<delete id="delete">
+delete from go_comment where cmt_id = #{cmt_id}
+</delete>
+
+<update id="update">
+update go_comment set cmt_content = #{cmt_content}, cmt_updateDate = sysdate where cmt_id = #{cmt_id}
+</update>
+
+<select id="getListWithPaging" resultType="org.board.domain.ReplyVO">
+<![CDATA[ 
+select cmt_id, cmt_board, cmt_content, cmt_writer, cmt_date, cmt_updateDate
+from(
+select /*+INDEX(go_comment idx_comment) */
+rownum rn, cmt_id, cmt_board, cmt_content, cmt_writer, cmt_date, cmt_updateDate
+from go_comment
+where cmt_board = #{cmt_board}
+and cmt_id > 0
+and rownum <= #{cri.pageNum} * #{cri.amount}
+) where rn >(#{cri.pageNum} -1) * #{cri.amount}
+]]>
+</select>
+
+<select id="getCountByCmt_board" resultType="int">
+<![CDATA[
+select count(cmt_id) from go_comment where cmt_board = #{cmt_board}
+]]>
+</select>
+</mapper>
+

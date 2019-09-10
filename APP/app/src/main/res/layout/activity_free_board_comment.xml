@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FreeBoardCommentActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:background="@color/colorPrimary">
+            <Button
+                android:id="@+id/free_board_comment_btn_back_act"
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:background="@drawable/ic_arrow_back_white_24dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textColor="@android:color/white"
+                android:textSize="20dp"
+                android:text="   댓글  "
+                android:paddingVertical="15dp"/>
+            <TextView
+                android:id="@+id/free_board_comment_cnt_act"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="18dp"
+                android:text=" (댓글 개수)"
+                android:paddingVertical="15dp"/>
+        </LinearLayout>
+        <ListView
+            android:id="@+id/free_board_comment_list_act"
+            android:layout_width="match_parent"
+            android:layout_height="580dp"></ListView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="30dp">
+            <EditText
+                android:id="@+id/free_board_comment_et_input_comment"
+                android:inputType="text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:layout_marginRight="10dp"
+                android:padding="10dp"
+                android:background="@drawable/bg_black"
+                android:hint="댓글을 입력해주세요 :)"
+                android:textSize="15dp"/>
+            <Button
+                android:id="@+id/free_board_comment_btn_write_act"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/button_primary"
+                android:text="등 록"
+                android:textColor="@android:color/white"
+                android:textSize="18dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
