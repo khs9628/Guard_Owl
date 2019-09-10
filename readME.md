@@ -1,7 +1,7 @@
 # Guard_Owl
 금고 프로젝트 파일 보관 레포지터리 입니다.
 
-![LOGO](/Project_Owl/WEB/mainresources/assets/img/logo.png)
+![LOGO](../WEB/mainresources/assets/img/logo.png)
 
  ## 프로젝트
     프로젝트 이름 : Guard Owl 
